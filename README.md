@@ -4,7 +4,7 @@
 [![Build Status](https://dev.azure.com/NordicSemiconductor/Wayland/_apis/build/status/nrf-device-lister-js?branchName=master)](https://dev.azure.com/NordicSemiconductor/Wayland/_build/latest?definitionId=13&branchName=master)
 [![License](https://img.shields.io/badge/license-Modified%20BSD%20License-blue.svg)](LICENSE)
 
-List USB/serialport/jlink devices based on traits and conflate them by serial number
+List USB/serialport devices based on traits and conflate them by serial number
 
 This is part of [Nordic Semiconductor](http://www.nordicsemi.com/)'s javascript tools to
 interface with nRF SoCs and development kits.
@@ -37,7 +37,6 @@ var lister = new DeviceLister({
     seggerUsb: false,   // Like 'usb', but filters by VendorId
     nordicDfu: false,   // Like 'nordicUsb', but also looks for the Nordic DFU trigger interface
     serialport: true,
-    jlink: true,
 });
 
 
@@ -55,7 +54,7 @@ lister.on('conflated', function(deviceMap){
     // Loop through map, etc
     // Each item in the Map will look like this:
     /*
-       { traits: [ 'jlink', 'serialport', 'usb', 'seggerUsb' ],
+       { traits: ['serialport', 'usb', 'seggerUsb' ],
          serialNumber: '00012345678',
          usb: {
             serialNumber: '00012345678',
@@ -77,11 +76,9 @@ lister.on('conflated', function(deviceMap){
 // The 'error' event fires whenever a serial number could not be
 // fetched, or when enumeration failed.
 // There are some specific cases where this will happen: no permissions
-// to open a USB device through libusb, an error in pc-nrfjprog-js
-// (or the subjacent jlink libraries), or serial ports without a serial number
+// to open a USB device through libusb, an error in serial ports without a serial number
 // (e.g. those built into the motherboard).
-// The recommendation is to raise all errors related to devices with the 'jlink'
-// trait, and devices with any USB trait only if their Product ID/Vendor ID
+// The recommendation is to raise all errors related to devices with any USB trait only if their Product ID/Vendor ID
 // (as listed in the usb Device) are of interest to your application.
 // Errors that happen on consecutive enumerations are throttled down: only
 // the first one is emitted.
@@ -140,17 +137,15 @@ The project is using `rollup.js`, so the following command is needed to run the 
 
 The project comes with automated integration tests in the `test` directory.
 In order to run the basic tests, the following devices must be connected to the PC:
-* JLink devices
 * Nordic USB devices
 
 In order to run the full tests, e.g. on the build server,
 the following device must be connected to the PC together with environment variables set (see below):
-* a nRF52840 development kit attached to the PC on both JLink port and CDC ACM port
+* a nRF52840 development kit attached to the PC on CDC ACM port
 
 #### Environment Variables
 
 The following environment variables need to be set to specify certain devices for the tests.
-* NRF52840_DK_JLINK_SERIAL_NUMBER
 * NRF52840_DK_USB_SERIAL_NUMBER
 
 To run the tests:

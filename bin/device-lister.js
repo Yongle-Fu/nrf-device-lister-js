@@ -40,13 +40,12 @@ const { version } = require('../package.json');
 
 args
     .version(version)
-    .description('List conflated USB/serialport/jlink devices')
+    .description('List conflated USB/serialport devices')
     .option('-u, --usb', 'Include USB devices (those available through libusb)')
     .option('-n, --nordic-usb', 'Include Nordic USB devices (with VendorID 0x1915, if available through libusb)')
     .option('-f, --nordic-dfu', 'Include Nordic USB devices with DFU trigger interface')
     .option('-g, --segger-usb', 'Include Segger USB devices (with VendorID 0x1366, if available through libusb)')
     .option('-s, --serialport', 'Include serial ports (including USB CDC ACMs)')
-    .option('-j, --jlink', 'Include J-link probes (those available through pc-nrfjprog-js)')
     .option('-b, --find-by-sn [serialNumber]', 'Find device by serial number')
     .option('-a, --list-all', 'List all detected devices')
     .option('-i, --list-all-info', 'List information of all detected devices')
@@ -66,7 +65,6 @@ if (!args.usb
     && !args.nordicDfu
     && !args.seggerUsb
     && !args.serialport
-    && !args.jlink
     && args.error
 ) {
     console.error('No device traits specified, no devices will be listed!');
@@ -79,7 +77,6 @@ if (args.listAll || args.listAllInfo || args.portsByBoard || args.serialnumbersB
     args.seggerUsb = true;
     args.nordicUsb = true;
     args.nordicDfu = true;
-    args.jlink = true;
 }
 
 const lister = new DeviceLister({
@@ -87,8 +84,7 @@ const lister = new DeviceLister({
     nordicUsb: args.nordicUsb,
     nordicDfu: args.nordicDfu,
     seggerUsb: args.seggerUsb,
-    serialport: args.serialport,
-    jlink: args.jlink,
+    serialport: args.serialport
 });
 
 lister.on('error', error => {

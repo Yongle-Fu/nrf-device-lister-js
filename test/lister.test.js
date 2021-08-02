@@ -42,19 +42,12 @@ const DeviceLister = require('../dist/device-lister');
 
 const { getBoardVersion } = DeviceLister;
 
-const testJlinkSerialNumber = process.env.NRF52840_DK_JLINK_SERIAL_NUMBER;
 const testUsbSerialNumber = process.env.NRF52840_DK_USB_SERIAL_NUMBER;
 const testFirmwarePath = path.join(__dirname, 'data', 'mbr_bootloader_pca10056.hex');
 
 let lister;
 
 describe('The Device Lister Traits', () => {
-    it('shall list jlink devices', async () => {
-        const devices = await new DeviceLister({
-            jlink: true,
-        }).reenumerate();
-        expect(Array.from(devices.values()).find(d => d.traits.includes('jlink'))).not.toBeUndefined();
-    });
 
     // skip this test, since nordicUsb devices are filtered out of
     // usb backend due to Windows LIBUSB_ERROR
@@ -68,22 +61,12 @@ describe('The Device Lister Traits', () => {
 
 describe('The Device Lister Dynamic', () => {
     it('shall list when new nordic usb device is detected', async () => {
-        if (!testJlinkSerialNumber || !testUsbSerialNumber) {
+        if (!testUsbSerialNumber) {
             return;
         }
 
         lister = new DeviceLister({
             nordicUsb: true,
-        });
-
-        // Erase the flash and shall not see Nordic USB CDC ACM interface.
-        await new Promise(resolve => {
-            nrfjprog.recover(
-                parseInt(testJlinkSerialNumber, 10),
-                () => {
-                    resolve();
-                }
-            );
         });
         let devices = await new Promise(resolve => {
             lister.on('conflated', deviceMap => {
@@ -93,12 +76,6 @@ describe('The Device Lister Dynamic', () => {
         });
         expect(devices.has(testUsbSerialNumber)).toBeFalsy();
 
-        // Program MBR and Bootloader to the device and shall see Nordic USB CDC ACM interface now.
-        await new Promise(resolve => {
-            nrfjprog.program(parseInt(testJlinkSerialNumber, 10), testFirmwarePath, {}, () => {
-                resolve();
-            });
-        });
         devices = await new Promise(resolve => {
             lister.on('conflated', deviceMap => {
                 lister.stop();

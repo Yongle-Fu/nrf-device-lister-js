@@ -34,7 +34,6 @@ const Usb = require('usb');
 const Debug = require('debug');
 const UsbBackend = require('./usb-backend');
 const SerialPortBackend = require('./serialport-backend');
-const JlinkBackend = require('./jlink-backend');
 const ErrorCodes = require('./util/errors');
 const { getBoardVersion } = require('./util/board-versions');
 
@@ -62,7 +61,7 @@ class DeviceLister extends EventEmitter {
         this._backends = [];
 
         const {
-            usb, nordicUsb, nordicDfu, seggerUsb, jlink, serialport,
+            usb, nordicUsb, nordicDfu, seggerUsb, serialport,
         } = traits;
 
         const usbDeviceClosedFilters = {};
@@ -95,7 +94,6 @@ class DeviceLister extends EventEmitter {
             this._backends.push(new UsbBackend(usbDeviceClosedFilters, usbDeviceOpenFilters));
         }
         if (serialport) { this._backends.push(new SerialPortBackend()); }
-        if (jlink) { this._backends.push(new JlinkBackend()); }
 
         this._boundReenumerate = this._triggerReenumeration.bind(this);
     }
