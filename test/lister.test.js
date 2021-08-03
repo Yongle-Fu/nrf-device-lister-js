@@ -36,19 +36,18 @@
 
 'use strict';
 
+// eslint-disable-next-line no-unused-vars
 const path = require('path');
-const nrfjprog = require('pc-nrfjprog-js');
 const DeviceLister = require('../dist/device-lister');
 
 const { getBoardVersion } = DeviceLister;
 
 const testUsbSerialNumber = process.env.NRF52840_DK_USB_SERIAL_NUMBER;
-const testFirmwarePath = path.join(__dirname, 'data', 'mbr_bootloader_pca10056.hex');
+// const testFirmwarePath = path.join(__dirname, 'data', 'mbr_bootloader_pca10056.hex');
 
 let lister;
 
 describe('The Device Lister Traits', () => {
-
     // skip this test, since nordicUsb devices are filtered out of
     // usb backend due to Windows LIBUSB_ERROR
     it.skip('shall list nordic usb devices', async () => {

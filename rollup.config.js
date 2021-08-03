@@ -15,7 +15,6 @@ export default [
             'debug',
             'usb',
             'serialport',
-            'pc-nrfjprog-js',
         ],
         plugins: [
             commonjs({}),
